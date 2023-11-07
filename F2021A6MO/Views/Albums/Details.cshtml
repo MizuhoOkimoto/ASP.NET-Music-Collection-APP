@@ -1,0 +1,79 @@
+﻿@model F2021A6MO.Models.AlbumWithDetailViewModel
+
+@{
+    ViewBag.Title = "Album details";
+    var userAccount = new F2021A6MO.Controllers.RequestUser(User as System.Security.Claims.ClaimsPrincipal);
+}
+
+<script src="//cdn.ckeditor.com/4.6.2/standard/ckeditor.js"></script>
+
+<h2>Album details - @Model.Name</h2>
+
+<div>
+
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+            <hr />
+        </dd>
+        
+        <dt>
+            @Html.DisplayNameFor(model => model.ReleaseDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ReleaseDate)
+            <hr />
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.UrlAlbum)
+        </dt>
+        <dd>
+            <img src=@Html.DisplayFor(modelItem => modelItem.UrlAlbum) alt=@Model.Name width="200" />
+            <hr />
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Genre)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Genre)
+            <hr />
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Background)
+        </dt>
+
+        <dd>
+            <div class="panel panel-default panel-body">
+                @Html.Raw(Model.Background)
+            </div>
+            <hr />
+        </dd>
+
+    </dl>
+
+    <script>CKEDITOR.replace('Background');</script>
+    <hr />
+
+</div>
+<p>
+    
+    @Html.ActionLink("Back to List", "Index") |
+    @if (userAccount.HasRoleClaim("Clerk"))
+    {
+        @Html.ActionLink("Add track to this album", "AddTrack", new { id = Model.Id })
+    }
+    else
+    {
+        <span style="color:red"> *Please login with Clerk account to create a new track* </span>
+    }
+</p>

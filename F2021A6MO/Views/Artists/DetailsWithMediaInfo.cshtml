@@ -1,0 +1,194 @@
+﻿@model F2021A6MO.Models.ArtistWithMediaInfoViewModel
+
+@{
+    ViewBag.Title = "Artist details with media items";
+    var userAccount = new F2021A6MO.Controllers.RequestUser(User as System.Security.Claims.ClaimsPrincipal);
+}
+
+<script src="//cdn.ckeditor.com/4.6.2/standard/ckeditor.js"></script>
+
+<h2>Artist details with media items</h2>
+
+<div>
+    <h4>Artist details - @Model.Name</h4>
+    <hr />
+    <dl class="dl-horizontal">
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+            <hr />
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BirthName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BirthName)
+            <hr />
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BirthOrStartDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BirthOrStartDate)
+            <hr />
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.UrlArtist)
+        </dt>
+
+        <dd>
+            <img src=@Html.DisplayFor(modelItem => modelItem.UrlArtist) alt=@Model.Name width="200" />
+            <hr />
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Genre)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Genre)
+            <hr />
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Career)
+        </dt>
+
+        <dd>
+            <div class="panel panel-default panel-body">
+                @Html.Raw(Model.Career)
+            </div>
+            <hr />
+        </dd>
+        @*------ DETAILS WITH MEDIA ITEMS ------*@
+
+
+        <dt>
+            Photos
+        </dt>
+        <dd>
+            @if (Model.MediaItems.Count() == 0)
+            {
+                <span>(none)</span> }
+            else
+            {
+                foreach (var item in Model.MediaItems.Where(m => m.ContentType.Contains("image/")))
+                {
+                    <div>
+                        <span>@item.Caption</span><br />
+                        <img src="~/media/@item.StringId" alt="@item.Caption" title="@item.Caption" width="200" />
+                    </div>
+                }
+            }
+            <hr />
+        </dd>
+
+        <dt>
+            Audios
+        </dt>
+        <dd>
+            @if (Model.MediaItems.Count() == 0)
+            {
+                <span>(none)</span> }
+            else
+            {
+                foreach (var item in Model.MediaItems.Where(m => m.ContentType.Contains("audio/")))
+                {
+                    <div>
+                        <span>@item.Caption</span><br />
+                        <audio src="~/mediaItem/@item.StringId" controls="controls" />
+                    </div>
+                }
+            }
+                <hr />
+            </dd>
+        <dt>
+            Videos
+        </dt>
+        <dd>
+            @if (Model.MediaItems.Count() == 0)
+            {
+                <span>(none)</span> }
+            else
+            {
+                foreach (var item in Model.MediaItems.Where(m => m.ContentType.Contains("video/")))
+                {
+                    <div>
+                        <span>@item.Caption</span><br />
+                        <video width="400" height="400" controls>
+                            <source src="~/mediaItem/@item.StringId" type="video/mp4" />
+                        </video>
+                    </div>
+                }
+            }
+                <hr />
+            </dd>
+        <dt>
+            Documents
+        </dt>
+        <dd>
+            @if (Model.MediaItems.Count() == 0)
+            {
+                <span>(none)</span> }
+            else
+            {
+                foreach (var item in Model.MediaItems.Where(m => m.ContentType.Contains("application/")))
+                {
+                    <div>
+                        @if (item.ContentType.Contains("word"))
+                        {
+                            
+                            <span>@item.Caption</span><br />
+                            <a href="~/mediaItem/@item.StringId" download><img src="~/Sample Icons/icon-word.png"></a>
+                        }
+                        else if (item.ContentType.Contains("excel"))
+                        {
+                            <span>@item.Caption</span><br />
+                            <a href="~/mediaItem/@item.StringId" download><img src="~/Sample Icons/icon-excel.png"></a>
+                        }
+                        else if (item.ContentType.Contains("pdf"))
+                        {
+                            //Response.ContentType = "application/pdf";
+                            //Response.AppendHeader("Content-Disposition", "attachment; filename=@.pdf");
+                            //Response.TransmitFile(Server.MapPath("~/Files/MyFile.pdf"));
+                            //Response.End();
+                            <span>@item.Caption</span><br />
+                            <a href="~/mediaItem/@item.StringId" download>
+                            <img src="~/Sample Icons/icon-pdf.png"></a>
+
+                        }
+                        
+                    </div>
+                }
+            }
+                <hr />
+            </dd>
+
+
+
+    </dl>
+    <script>CKEDITOR.replace('Career');</script>
+</div>
+<p>
+    @Html.ActionLink("Back to List", "Index") |
+    @if (userAccount.HasRoleClaim("Coordinator"))
+    {
+        @Html.ActionLink("Add album for this artist", "AddAlbum", new { id = Model.Id })
+        <span> | </span>
+        @Html.ActionLink("Add media for this artist", "AddMedia", new { id = Model.Id })
+    }
+    else
+    {
+        <span style="color:red"> *Please login with Coordinator account to add a new album or media* </span>
+    }
+
+</p>

@@ -1,0 +1,89 @@
+﻿@model F2021A6MO.Models.ArtistWithDetailViewModel
+
+@{
+    ViewBag.Title = "Details";
+    var userAccount = new F2021A6MO.Controllers.RequestUser(User as System.Security.Claims.ClaimsPrincipal);
+}
+
+<script src="//cdn.ckeditor.com/4.6.2/standard/ckeditor.js"></script>
+
+<h2>Artist details - @Model.Name</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+            <hr />
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BirthName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BirthName)
+            <hr />
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BirthOrStartDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BirthOrStartDate)
+            <hr />
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.UrlArtist)
+        </dt>
+
+        <dd>
+            <img src=@Html.DisplayFor(modelItem => modelItem.UrlArtist) alt=@Model.Name width="200" />
+            <hr />
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Genre)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Genre)
+            <hr />
+        </dd>
+
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Career)
+        </dt>
+
+        <dd>
+            <div class="panel panel-default panel-body">
+                @Html.Raw(Model.Career)
+            </div>
+            <hr />
+        </dd>
+
+    </dl>
+    <script>CKEDITOR.replace('Career');</script>
+</div>
+<p>
+    
+    @Html.ActionLink("Back to List", "Index") |
+    @if (userAccount.HasRoleClaim("Coordinator"))
+    {
+        @Html.ActionLink("Add album for this artist", "AddAlbum", new { id = Model.Id }) 
+        <span> | </span>
+        @Html.ActionLink("Add media for this artist", "AddMedia", new { id = Model.Id })
+    }
+    else
+    {
+        <span style="color:red"> *Please login with Coordinator account to add a new album or media* </span>
+    } 
+</p>
